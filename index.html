@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SKY HRT Solutions</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/static/payslip_system.css" />
+</head>
+<body>
+    <button class="language-toggle" id="languageToggle">
+        <i class="fas fa-language"></i> English
+    </button>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="static/logo.png" alt="Company Logo" class="logo-image" />
+                <div class="logo-text">SKY HRT Solutions</div>
+            </div>
+            <div class="tagline">Human Resources & Technology Excellence</div>
+        </header>
+
+        <div class="card" id="loginCard">
+            <h2 id="loginTitle">Employee Login</h2>
+            <div class="form-group">
+                <label for="hrid" id="hridLabel">HR ID</label>
+                <input type="text" id="hrid" placeholder="Enter your HR ID" />
+            </div>
+            <div class="form-group">
+                <label for="nid" id="nidLabel">National ID (NID)</label>
+                <input
+                  type="text"
+                  id="nid"
+                  placeholder="Enter your 14-digit National ID"
+                  maxlength="14"
+                />
+                <small
+                  style="color: var(--text-gray); display: block; margin-top: 5px"
+                  >NID must be exactly 14 digits</small
+                >
+            </div>
+            <button id="loginBtn">Login</button>
+
+            <div style="text-align: center; margin-top: 20px">
+                <a href="#" id="adminLoginLink">HR Admin Login</a>
+            </div>
+        </div>
+
+        <div class="card" id="adminLoginCard" style="display: none">
+            <h2 id="adminLoginTitle">HR Admin Login</h2>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter admin username" />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Enter admin password"
+                />
+            </div>
+            <button id="adminLoginBtn">Login</button>
+
+            <div style="text-align: center; margin-top: 20px">
+                <a href="#" id="employeeLoginLink">Employee Login</a>
+            </div>
+        </div>
+
+        <div class="card" id="employeeDashboard" style="display: none">
+            <h2 id="dashboardTitle">Employee Dashboard</h2>
+            <div class="welcome-message">
+                <span id="welcomeText">Welcome,</span>
+                <span id="employeeName">Employee Name</span>
+            </div>
+
+            <div class="form-group">
+                <label for="monthSelect" id="monthLabel">Select Month</label>
+                <select id="monthSelect">
+                    <option value="">-- Select Month --</option>
+                    <option value="01">January</option>
+                    <option value="02">February</option>
+                    <option value="03">March</option>
+                    <option value="04">April</option>
+                    <option value="05">May</option>
+                    <option value="06">June</option>
+                    <option value="07">July</option>
+                    <option value="08">August</option>
+                    <option value="09">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+                </select>
+            </div>
+
+            <div class="payslip-container">
+                <div class="payslip-placeholder" id="payslipPlaceholder">
+                    <i
+                      class="fas fa-file-pdf"
+                      style="font-size: 3rem; margin-bottom: 15px"
+                    ></i>
+                    <p id="payslipHint">Select a month to view your payslip</p>
+                </div>
+            </div>
+
+            <button class="logout" id="employeeLogout">Logout</button>
+        </div>
+
+        <div class="card" id="adminDashboard" style="display: none">
+            <h2>HR Admin Dashboard</h2>
+            <div class="welcome-message">
+                Welcome, <span>Ehab</span>. Empower your workforce with excellence!
+            </div>
+
+            <div class="admin-panel">
+                <div class="admin-card" id="uploadExcelBtn">
+                    <div class="admin-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <h3>Upload Employee Data</h3>
+                    <p>Upload Excel file with employee information</p>
+                </div>
+                <div class="admin-card" id="uploadPayslipsBtn">
+                    <div class="admin-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <h3>Upload Payslips</h3>
+                    <p>Upload new PDF payslips for employees</p>
+                </div>
+
+                <div class="admin-card" id="deletePayslipsBtn">
+                    <div class="admin-icon">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <h3>Delete Payslips</h3>
+                    <p>Remove all existing payslips</p>
+                </div>
+            </div>
+
+            <div id="uploadArea" style="display: none">
+                <div class="drag-drop-area" id="dragDropArea">
+                    <div class="drag-drop-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Drag & Drop PDF Files</h3>
+                    <p>or click to browse your files</p>
+                    <p>Files should be named: Payslip_HRID_MONTH.pdf</p>
+                    <input
+                      type="file"
+                      id="fileInput"
+                      multiple
+                      accept=".pdf"
+                      style="display: none"
+                    />
+                </div>
+                <div id="uploadStatus"></div>
+                <button id="doneUploadBtn">Done</button>
+            </div>
+
+            <div id="uploadExcelArea" style="display: none">
+                <div class="drag-drop-area" id="dragDropExcelArea">
+                    <div class="drag-drop-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <h3>Drag & Drop Excel File</h3>
+                    <p>or click to browse your files</p>
+                    <p>File should be in .xlsx or .xlsm format</p>
+                    <input
+                      type="file"
+                      id="excelFileInput"
+                      accept=".xlsx,.xlsm"
+                      style="display: none"
+                    />
+                </div>
+                <div id="excelUploadStatus"></div>
+                <button id="doneExcelUploadBtn">Done</button>
+            </div>
+
+            <button class="logout" id="adminLogout">Logout</button>
+        </div>
+    </div>
+
+    <div class="confirmation-modal" id="deleteModal">
+        <div class="modal-content">
+            <h3>Confirm Deletion</h3>
+            <p>Are you sure you want to delete all payslip files? This action cannot be undone.</p>
+            <div class="modal-buttons">
+                <button class="secondary" id="cancelDelete">Cancel</button>
+                <button id="confirmDelete">Delete All</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Language support
+        const translations = {
+            en: {
+                loginTitle: "Employee Login",
+                hridLabel: "HR ID",
+                nidLabel: "National ID (NID)",
+                loginBtn: "Login",
+                adminLoginLink: "HR Admin Login",
+                adminLoginTitle: "HR Admin Login",
+                employeeLoginLink: "Employee Login",
+                dashboardTitle: "Employee Dashboard",
+                welcomeText: "Welcome,",
+                monthLabel: "Select Month",
+                payslipHint: "Select a month to view your payslip",
+                salaryNotCash: "Your salary not cash",
+                logout: "Logout",
+                months: [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
+                ],
+            },
+            ar: {
+                loginTitle: "تسجيل دخول الموظف",
+                hridLabel: "معرف الموارد البشرية",
+                nidLabel: "الهوية الوطنية",
+                loginBtn: "تسجيل الدخول",
+                adminLoginLink: "تسجيل دخول المشرف",
+                adminLoginTitle: "تسجيل دخول مشرف الموارد البشرية",
+                employeeLoginLink: "تسجيل دخول الموظف",
+                dashboardTitle: "لوحة تحكم الموظف",
+                welcomeText: "أهلاً بك,",
+                monthLabel: "اختر الشهر",
+                payslipHint: "اختر شهراً لعرض إيصال الراتب",
+                salaryNotCash: "لا يوجد بيان راتب لهذا الشهر",
+                logout: "تسجيل الخروج",
+                months: [
+                    "يناير",
+                    "فبراير",
+                    "مارس",
+                    "أبريل",
+                    "مايو",
+                    "يونيو",
+                    "يوليو",
+                    "أغسطس",
+                    "سبتمبر",
+                    "أكتوبر",
+                    "نوفمبر",
+                    "ديسمبر",
+                ],
+            },
+        };
+
+        let currentLang = "en";
+        const languageToggle = document.getElementById("languageToggle");
+
+        languageToggle.addEventListener("click", () => {
+            currentLang = currentLang === "en" ? "ar" : "en";
+            updateLanguage();
+        });
+
+        function updateLanguage() {
+            document.body.dir = currentLang === "ar" ? "rtl" : "ltr";
+            languageToggle.innerHTML =
+                currentLang === "en"
+                    ? '<i class="fas fa-language"></i> English'
+                    : '<i class="fas fa-language"></i> العربية';
+
+            // Update all elements with translations
+            for (const [key, value] of Object.entries(translations[currentLang])) {
+                const elements = document.querySelectorAll(`[id="${key}"]`);
+                elements.forEach((el) => {
+                    if (el.tagName === "INPUT" && el.placeholder) {
+                        el.placeholder = value;
+                    } else {
+                        el.textContent = value;
+                    }
+                });
+            }
+
+            // Update month dropdown
+            if (currentLang === "ar") {
+                const monthSelect = document.getElementById("monthSelect");
+                monthSelect.innerHTML = '<option value="">-- اختر الشهر --</option>';
+                translations.ar.months.forEach((month, index) => {
+                    const option = document.createElement("option");
+                    option.value = (index + 1).toString().padStart(2, "0");
+                    option.textContent = month;
+                    monthSelect.appendChild(option);
+                });
+            }
+        }
+
+        // DOM elements
+        const loginCard = document.getElementById("loginCard");
+        const adminLoginCard = document.getElementById("adminLoginCard");
+        const employeeDashboard = document.getElementById("employeeDashboard");
+        const adminDashboard = document.getElementById("adminDashboard");
+        const adminLoginLink = document.getElementById("adminLoginLink");
+        const employeeLoginLink = document.getElementById("employeeLoginLink");
+        const loginBtn = document.getElementById("loginBtn");
+        const adminLoginBtn = document.getElementById("adminLoginBtn");
+        const employeeLogout = document.getElementById("employeeLogout");
+        const adminLogout = document.getElementById("adminLogout");
+        const monthSelect = document.getElementById("monthSelect");
+        const payslipPlaceholder = document.getElementById("payslipPlaceholder");
+        const uploadExcelBtn = document.getElementById("uploadExcelBtn");
+        const uploadPayslipsBtn = document.getElementById("uploadPayslipsBtn");
+        const deletePayslipsBtn = document.getElementById("deletePayslipsBtn");
+        const uploadArea = document.getElementById("uploadArea");
+        const uploadExcelArea = document.getElementById("uploadExcelArea");
+        const dragDropArea = document.getElementById("dragDropArea");
+        const dragDropExcelArea = document.getElementById("dragDropExcelArea");
+        const fileInput = document.getElementById("fileInput");
+        const excelFileInput = document.getElementById("excelFileInput");
+        const doneUploadBtn = document.getElementById("doneUploadBtn");
+        const doneExcelUploadBtn = document.getElementById("doneExcelUploadBtn");
+        const deleteModal = document.getElementById("deleteModal");
+        const cancelDelete = document.getElementById("cancelDelete");
+        const confirmDelete = document.getElementById("confirmDelete");
+        const nidInput = document.getElementById("nid");
+
+        // NID validation - allow only numbers and limit to 14 digits
+        nidInput.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, "").slice(0, 14);
+        });
+
+        // Event listeners
+        adminLoginLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            loginCard.style.display = "none";
+            adminLoginCard.style.display = "block";
+        });
+
+        employeeLoginLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            adminLoginCard.style.display = "none";
+            loginCard.style.display = "block";
+        });
+
+        // Employee login with API call
+        loginBtn.addEventListener("click", async () => {
+            const hrid = document.getElementById("hrid").value;
+            const nid = document.getElementById("nid").value;
+
+            // Validate NID length
+            if (nid.length !== 14) {
+                showMessage("National ID must be exactly 14 digits.", "error");
+                return;
+            }
+
+            try {
+                const response = await fetch("/login_employee", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ hrid, nid }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById("employeeName").textContent = data.name;
+                    loginCard.style.display = "none";
+                    employeeDashboard.style.display = "block";
+                } else {
+                    showMessage(data.error || "Invalid HR ID or NID. Please try again.", "error");
+                }
+            } catch (error) {
+                showMessage("Login failed. Please check your connection and try again.", "error");
+            }
+        });
+
+        // Admin login with API call
+        adminLoginBtn.addEventListener("click", async () => {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const response = await fetch("/login_admin", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ username, password }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    adminLoginCard.style.display = "none";
+                    adminDashboard.style.display = "block";
+                } else {
+                    showMessage(data.error || "Invalid username or password. Please try again.", "error");
+                }
+            } catch (error) {
+                showMessage("Login failed. Please check your connection and try again.", "error");
+            }
+        });
+
+        employeeLogout.addEventListener("click", () => {
+            employeeDashboard.style.display = "none";
+            loginCard.style.display = "block";
+            document.getElementById("hrid").value = "";
+            document.getElementById("nid").value = "";
+            monthSelect.value = "";
+            payslipPlaceholder.innerHTML =
+                '<i class="fas fa-file-pdf" style="font-size: 3rem; margin-bottom: 15px;"></i><p id="payslipHint">Select a month to view your payslip</p>';
+        });
+
+        adminLogout.addEventListener("click", () => {
+            adminDashboard.style.display = "none";
+            adminLoginCard.style.display = "block";
+            uploadArea.style.display = "none";
+            uploadExcelArea.style.display = "none";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+        });
+
+        // Month selection with API call
+        monthSelect.addEventListener("change", async () => {
+            const month = monthSelect.value;
+
+            if (month && document.getElementById("employeeName").textContent) {
+                try {
+                    const hrid = document.getElementById("hrid").value;
+                        const response = await fetch(`/get_payslip/${hrid}/${month}`);
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = URL.createObjectURL(blob);
+                        payslipPlaceholder.innerHTML = `
+                            <div class="payslip-controls">
+                                <button class="fullscreen-btn" onclick="toggleFullscreen(this.closest('.payslip-placeholder').querySelector('iframe'))">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                            <iframe src="${url}" width="100%" height="300px" style="border: none;"></iframe>
+                            <p>Payslip for ${translations[currentLang].months[parseInt(month) - 1]}</p>
+                        `;
+                    } else {
+                        const errorData = await response.json();
+                        payslipPlaceholder.innerHTML = `
+                            <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 15px; color: var(--error-color);"></i>
+                            <p>${errorData.error || (currentLang === "en" ? "Your salary not cash" : "لا يوجد بيان راتب لهذا الشهر")}</p>
+                        `;
+                    }
+                } catch (error) {
+                    payslipPlaceholder.innerHTML = `
+                        <i class="fas fa-exclamation-circle" style="font-size: 3rem; margin-bottom: 15px; color: var(--error-color);"></i>
+                        <p>${currentLang === "en" ? "Error loading payslip" : "خطأ في تحميل إيصال الراتب"}</p>
+                    `;
+                }
+            }
+        });
+
+        uploadExcelBtn.addEventListener("click", () => {
+            uploadExcelArea.style.display = "block";
+        });
+
+        dragDropExcelArea.addEventListener("click", () => {
+            excelFileInput.click();
+        });
+
+        excelFileInput.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                processExcelFile(e.target.files[0]);
+            }
+        });
+
+        dragDropExcelArea.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dragDropExcelArea.style.borderColor = "var(--secondary-accent)";
+            dragDropExcelArea.style.backgroundColor = "rgba(255, 119, 0, 0.1)";
+        });
+
+        dragDropExcelArea.addEventListener("dragleave", () => {
+            dragDropExcelArea.style.borderColor = "var(--primary-accent)";
+            dragDropExcelArea.style.backgroundColor = "transparent";
+        });
+
+        dragDropExcelArea.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dragDropExcelArea.style.borderColor = "var(--primary-accent)";
+            dragDropExcelArea.style.backgroundColor = "transparent";
+
+            if (e.dataTransfer.files.length > 0) {
+                processExcelFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        doneExcelUploadBtn.addEventListener("click", () => {
+            uploadExcelArea.style.display = "none";
+        });
+
+        function processExcelFile(file) {
+            const statusElement = document.getElementById("excelUploadStatus");
+            statusElement.innerHTML = "";
+
+            if (!file.name.toLowerCase().endsWith(".xlsx") && !file.name.toLowerCase().endsWith(".xlsm")) {
+                showMessage(`Invalid file type: ${file.name}`, "error", statusElement);
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            fetch("/upload_excel", {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.error) {
+                        showMessage(data.error, "error", statusElement);
+                    } else {
+                        showMessage(data.message, "success", statusElement);
+                    }
+                })
+                .catch(() => {
+                    showMessage("Error uploading Excel file", "error", statusElement);
+                });
+        }
+
+        uploadPayslipsBtn.addEventListener("click", () => {
+            uploadArea.style.display = "block";
+        });
+
+        deletePayslipsBtn.addEventListener("click", () => {
+            deleteModal.style.display = "flex";
+        });
+
+        cancelDelete.addEventListener("click", () => {
+            deleteModal.style.display = "none";
+        });
+
+        confirmDelete.addEventListener("click", () => {
+            fetch("/delete_payslips", {
+                method: "POST",
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.message) {
+                        showMessage(data.message, "success");
+                    } else {
+                        showMessage("Error deleting payslips", "error");
+                    }
+                    deleteModal.style.display = "none";
+                })
+                .catch(() => {
+                    showMessage("Error deleting payslips. Please try again.", "error");
+                    deleteModal.style.display = "none";
+                });
+        });
+
+        dragDropArea.addEventListener("click", () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                processFiles(e.target.files);
+            }
+        });
+
+        dragDropArea.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dragDropArea.style.borderColor = "var(--secondary-accent)";
+            dragDropArea.style.backgroundColor = "rgba(255, 119, 0, 0.1)";
+        });
+
+        dragDropArea.addEventListener("dragleave", () => {
+            dragDropArea.style.borderColor = "var(--primary-accent)";
+            dragDropArea.style.backgroundColor = "transparent";
+        });
+
+        dragDropArea.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dragDropArea.style.borderColor = "var(--primary-accent)";
+            dragDropArea.style.backgroundColor = "transparent";
+
+            if (e.dataTransfer.files.length > 0) {
+                processFiles(e.dataTransfer.files);
+            }
+        });
+
+        doneUploadBtn.addEventListener("click", () => {
+            uploadArea.style.display = "none";
+        });
+
+        function processFiles(files) {
+            const statusElement = document.getElementById("uploadStatus");
+            statusElement.innerHTML = "";
+
+            const formData = new FormData();
+            let hasValidFile = false;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type !== "application/pdf") {
+                    showMessage(`Skipped ${file.name}: Not a PDF file`, "error", statusElement);
+                    continue;
+                }
+
+                // Check if filename follows the pattern
+                if (!file.name.match(/^Payslip_.+_.+\.pdf$/i)) {
+                    showMessage(`Skipped ${file.name}: Incorrect filename format`, "error", statusElement);
+                    continue;
+                }
+
+                formData.append("files", file);
+                hasValidFile = true;
+            }
+
+            if (!hasValidFile) {
+                showMessage("No valid PDF files to upload", "error", statusElement);
+                return;
+            }
+
+            fetch("/upload_payslips", {
+                method: "POST",
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.uploaded && data.uploaded.length > 0) {
+                        data.uploaded.forEach((filename) => {
+                            showMessage(`Uploaded ${filename} successfully`, "success", statusElement);
+                        });
+                    } else {
+                        showMessage("No files were uploaded", "error", statusElement);
+                    }
+                })
+                .catch(() => {
+                    showMessage("Error uploading files", "error", statusElement);
+                });
+        }
+
+        function showMessage(text, type, parent = document.body) {
+            const message = document.createElement("div");
+            message.className = `message ${type}`;
+            message.textContent = text;
+            parent.appendChild(message);
+
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        }
+
+        // Fullscreen functionality
+        function toggleFullscreen(iframeElement) {
+            if (!document.fullscreenElement) {
+                if (iframeElement.requestFullscreen) {
+                    iframeElement.requestFullscreen();
+                } else if (iframeElement.webkitRequestFullscreen) {
+                    iframeElement.webkitRequestFullscreen();
+                } else if (iframeElement.msRequestFullscreen) {
+                    iframeElement.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // Initialize the app
+        updateLanguage();
+    </script>
+</body>
+</html>
